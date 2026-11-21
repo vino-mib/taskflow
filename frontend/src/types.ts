@@ -49,6 +49,7 @@ export interface TaskPage {
 
 export interface AuthPayload {
   token: string
+  refreshToken: string
   user: User
 }
 

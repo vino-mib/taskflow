@@ -32,6 +32,9 @@ export const resolvers = {
   Mutation: {
     register: (_: unknown, { input }: any) => authService.register(input),
     login: (_: unknown, { email, password }: any) => authService.login(email, password),
+    refresh: (_: unknown, { refreshToken }: { refreshToken: string }) => authService.refresh(refreshToken),
+    logout: (_: unknown, { refreshToken }: { refreshToken: string }) =>
+      authService.revokeRefreshToken(refreshToken),
     createProject: (_: unknown, { input }: any, ctx: Context) =>
       projectService.create(requireAuth(ctx), input),
     addMember: (_: unknown, { projectId, userId }: any, ctx: Context) =>

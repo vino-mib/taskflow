@@ -101,6 +101,7 @@ export const REGISTER = gql`
   mutation Register($input: RegisterInput!) {
     register(input: $input) {
       token
+      refreshToken
       user {
         ...UserFields
       }
@@ -113,12 +114,19 @@ export const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
+      refreshToken
       user {
         ...UserFields
       }
     }
   }
   ${USER_FIELDS}
+`
+
+export const LOGOUT = gql`
+  mutation Logout($refreshToken: String!) {
+    logout(refreshToken: $refreshToken)
+  }
 `
 
 export const CREATE_PROJECT = gql`

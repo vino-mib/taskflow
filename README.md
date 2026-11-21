@@ -7,7 +7,7 @@ TaskFlow is a small team task tracker, similar to a mini Trello or Jira. Users s
 
 ## Features
 
-- Register, log in, and stay signed in with a JWT (7-day expiry)
+- Register, log in, and stay signed in with a 1-hour access token plus a 7-day refresh token
 - Projects you own or belong to, with members
 - Tasks with status, priority, due date, description, and assignee
 - Drag-and-drop board per project, plus a list view
@@ -110,6 +110,7 @@ Get a token from `login` or `register`:
 mutation {
   login(email: "asha@example.com", password: "password123") {
     token
+    refreshToken
     user { id name }
   }
 }
@@ -137,7 +138,9 @@ Main operations:
 | Query | `projects` | Projects you can access |
 | Query | `project(id)` | One project with access check |
 | Query | `tasks(filter, page, pageSize)` | Paginated tasks across accessible projects |
-| Mutation | `register`, `login` | Create an account or sign in |
+| Mutation | `register`, `login` | Create an account or sign in. Both return an access token and a refresh token |
+| Mutation | `refresh` | Exchange a refresh token for a new access token and a new refresh token |
+| Mutation | `logout` | Revoke a refresh token |
 | Mutation | `createProject`, `addMember` | Create a project, add a member by user id (owner only) |
 | Mutation | `createTask`, `updateTask`, `deleteTask` | Manage tasks |
 
@@ -146,7 +149,7 @@ The full schema lives in `backend/src/graphql/typeDefs.ts`.
 ## Troubleshooting
 
 - **`Could not connect to any servers in your MongoDB Atlas cluster`**: add your current IP under Atlas **Network Access**, then restart `npm run dev`.
-- **`UNAUTHENTICATED` on every request**: the token is missing, malformed, or expired. Log in again.
+- **`UNAUTHENTICATED` on every request**: the access token is missing or expired, and the refresh token is missing or no longer valid. Log in again.
 - **Frontend shows "Cannot reach the TaskFlow API"**: the backend is not running, or `VITE_GRAPHQL_URL` points to the wrong address.
 
 ## More documentation

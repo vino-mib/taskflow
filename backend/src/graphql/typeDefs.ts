@@ -33,6 +33,7 @@ export const typeDefs = `#graphql
 
   type AuthPayload {
     token: String!
+    refreshToken: String!
     user: User!
   }
 
@@ -84,6 +85,8 @@ export const typeDefs = `#graphql
   type Mutation {
     register(input: RegisterInput!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
+    refresh(refreshToken: String!): AuthPayload!
+    logout(refreshToken: String!): Boolean!
     createProject(input: CreateProjectInput!): Project!
     addMember(projectId: ID!, userId: ID!): Project!
     createTask(input: CreateTaskInput!): Task!

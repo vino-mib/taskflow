@@ -6,7 +6,7 @@
 
 **TaskFlow** is a small team task tracker (think a mini Trello/Jira):
 
-- Users **register / log in** and get a JWT.
+- Users **register / log in** and get a 1-hour JWT plus a 7-day refresh token.
 - A user **creates Projects** and invites other users as **members**.
 - Inside a project, members create **Tasks** with status (`TODO → IN_PROGRESS → DONE`),
   priority, due date and an optional assignee.
@@ -34,7 +34,7 @@ To send the token, add the HTTP header: `Authorization: Bearer <token>`.
 src/
 ├── index.ts                 # Express + Apollo bootstrap
 ├── config/  env.ts, db.ts   # validated env vars, Mongo connection
-├── models/                  # Mongoose schemas (User, Project, Task)
+├── models/                  # Mongoose schemas (User, Project, Task, RefreshToken)
 ├── graphql/
 │   ├── typeDefs.ts          # the GraphQL schema (the API contract)
 │   ├── resolvers.ts         # thin: auth check -> call service
@@ -128,7 +128,7 @@ query {
 4. Add cursor-based pagination instead of page/pageSize.
 5. Add a `myTasks` query (tasks assigned to me across all projects).
 6. Add a `taskStats(projectId)` query using a Mongo aggregation (count per status).
-7. Add refresh tokens, or roles (`ADMIN`, `MEMBER`).
+7. Add roles (`ADMIN`, `MEMBER`).
 
 ## Common gotchas
 

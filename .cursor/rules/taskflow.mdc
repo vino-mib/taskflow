@@ -1,0 +1,39 @@
+---
+description: TaskFlow architecture and conventions for the GraphQL API and React client
+alwaysApply: true
+---
+
+# TaskFlow
+
+Task tracker. Backend is Apollo Server 4, Express, TypeScript, and Mongoose. Frontend is React, Vite, and Apollo Client. One GraphQL endpoint: `POST /graphql`. `/health` is the only other HTTP route.
+
+## Layout
+
+- Schema: `backend/src/graphql/typeDefs.ts`
+- Resolvers stay thin: `requireAuth` (except `register`, `login`, `refresh`, and `logout`), then a service in `backend/src/services/`
+- Access rules live in services. `assertAccess` allows owner or member. `addMember` is owner-only and takes a user id.
+- The access JWT lasts 1 hour and is read in `backend/src/graphql/context.ts` from `Authorization: Bearer <token>`. The refresh token is opaque, stored as a hash, lasts 7 days, and is rotated by `refresh`. DataLoaders are created per request. Do not reuse them across requests.
+- Frontend operations: `frontend/src/graphql/operations.ts`. Token keys: `taskflow_token` and `taskflow_refresh_token`. After login or logout, clear the Apollo cache.
+
+## Data access
+
+Return a Promise from resolvers and services. Do not return a Mongoose `Query`. A query can execute only once, and GraphQL calls `.then()` on the result more than once (`Query was already executed`). Make the function `async` and `return await Model.find(...)`, or call `.exec()`.
+
+`Project.create` and `Task.create` already return Promises. `listForUser` and `Project.tasks` must stay awaited.
+
+There is no `users` query. People appear as `owner`, `members`, or `assignee`.
+
+## Changing the API
+
+A new field needs all of these, kept in sync:
+
+1. Type, input, or enum in `typeDefs.ts`
+2. Service method with the access check
+3. Resolver
+4. Frontend operation, plus the TypeScript types in `frontend/src/types.ts`
+
+Errors use `appError(message, code)` with `UNAUTHENTICATED`, `FORBIDDEN`, `NOT_FOUND`, or `BAD_USER_INPUT`.
+
+## Secrets
+
+Never commit `.env`. `JWT_SECRET` is at least 16 characters. URL-encode special characters in the MongoDB password inside `MONGODB_URI`.

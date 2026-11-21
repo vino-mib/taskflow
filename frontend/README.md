@@ -16,7 +16,7 @@ Open http://localhost:5173. Register an account, then create a project and tasks
 
 To point at a different API, copy `.env.example` to `.env` and set `VITE_GRAPHQL_URL`.
 
-After sign-in, the app stores the JWT and sends `Authorization: Bearer <token>` on every GraphQL request.
+After sign-in, the app stores the access token and the refresh token. It sends `Authorization: Bearer <token>` on every GraphQL request, and calls `refresh` when that access token expires.
 
 ## Screens and operations
 
