@@ -59,6 +59,11 @@ export interface RegisterInput {
   password: string
 }
 
+export interface UpdateProjectInput {
+  name?: string
+  description?: string
+}
+
 export interface TaskFilterInput {
   projectId?: string
   status?: TaskStatus

@@ -1,5 +1,6 @@
 import { isValidObjectId } from "mongoose";
 import { Project } from "../models/Project";
+import { Task } from "../models/Task";
 import { User } from "../models/User";
 import { appError } from "../utils/errors";
 
@@ -27,6 +28,38 @@ export const projectService = {
       owner: userId,
       members: [userId],
     });
+  },
+
+  // Owner only. Changes only the fields that were sent.
+  async update(
+    userId: string,
+    projectId: string,
+    input: { name?: string | null; description?: string | null }
+  ) {
+    const project = await this.assertAccess(projectId, userId);
+    if (project.owner.toString() !== userId)
+      throw appError("Only the owner can update this project", "FORBIDDEN");
+
+    if (input.name !== undefined && input.name !== null) {
+      const name = input.name.trim();
+      if (!name) throw appError("Project name cannot be empty", "BAD_USER_INPUT");
+      project.name = name;
+    }
+    if (input.description !== undefined && input.description !== null)
+      project.description = input.description;
+    return project.save();
+  },
+
+  // Owner only. Deletes every task in the project, then the project itself.
+  // Tasks go first so a failure leaves an empty project, not hidden orphan tasks.
+  async remove(userId: string, projectId: string) {
+    const project = await this.assertAccess(projectId, userId);
+    if (project.owner.toString() !== userId)
+      throw appError("Only the owner can delete this project", "FORBIDDEN");
+
+    await Task.deleteMany({ project: project._id });
+    await project.deleteOne();
+    return true;
   },
 
   async addMember(userId: string, projectId: string, memberId: string) {

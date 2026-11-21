@@ -53,6 +53,10 @@ export const typeDefs = `#graphql
     name: String!
     description: String
   }
+  input UpdateProjectInput {
+    name: String
+    description: String
+  }
   input CreateTaskInput {
     projectId: ID!
     title: String!
@@ -88,6 +92,8 @@ export const typeDefs = `#graphql
     refresh(refreshToken: String!): AuthPayload!
     logout(refreshToken: String!): Boolean!
     createProject(input: CreateProjectInput!): Project!
+    updateProject(id: ID!, input: UpdateProjectInput!): Project!
+    deleteProject(id: ID!): Boolean!
     addMember(projectId: ID!, userId: ID!): Project!
     createTask(input: CreateTaskInput!): Task!
     updateTask(id: ID!, input: UpdateTaskInput!): Task!

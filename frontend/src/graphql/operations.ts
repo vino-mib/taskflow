@@ -138,6 +138,22 @@ export const CREATE_PROJECT = gql`
   }
 `
 
+export const UPDATE_PROJECT = gql`
+  mutation UpdateProject($id: ID!, $input: UpdateProjectInput!) {
+    updateProject(id: $id, input: $input) {
+      id
+      name
+      description
+    }
+  }
+`
+
+export const DELETE_PROJECT = gql`
+  mutation DeleteProject($id: ID!) {
+    deleteProject(id: $id)
+  }
+`
+
 export const ADD_MEMBER = gql`
   mutation AddMember($projectId: ID!, $userId: ID!) {
     addMember(projectId: $projectId, userId: $userId) {

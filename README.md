@@ -141,7 +141,9 @@ Main operations:
 | Mutation | `register`, `login` | Create an account or sign in. Both return an access token and a refresh token |
 | Mutation | `refresh` | Exchange a refresh token for a new access token and a new refresh token |
 | Mutation | `logout` | Revoke a refresh token |
-| Mutation | `createProject`, `addMember` | Create a project, add a member by user id (owner only) |
+| Mutation | `createProject` | Create a project |
+| Mutation | `updateProject`, `deleteProject` | Rename or delete a project (owner only). `deleteProject` also deletes all of its tasks |
+| Mutation | `addMember` | Add a member by user id (owner only) |
 | Mutation | `createTask`, `updateTask`, `deleteTask` | Manage tasks |
 
 The full schema lives in `backend/src/graphql/typeDefs.ts`.

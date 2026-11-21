@@ -37,6 +37,13 @@ export const resolvers = {
       authService.revokeRefreshToken(refreshToken),
     createProject: (_: unknown, { input }: any, ctx: Context) =>
       projectService.create(requireAuth(ctx), input),
+    updateProject: (
+      _: unknown,
+      { id, input }: { id: string; input: { name?: string | null; description?: string | null } },
+      ctx: Context
+    ) => projectService.update(requireAuth(ctx), id, input),
+    deleteProject: (_: unknown, { id }: { id: string }, ctx: Context) =>
+      projectService.remove(requireAuth(ctx), id),
     addMember: (_: unknown, { projectId, userId }: any, ctx: Context) =>
       projectService.addMember(requireAuth(ctx), projectId, userId),
     createTask: (_: unknown, { input }: any, ctx: Context) =>
